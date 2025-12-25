@@ -1,13 +1,14 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
     dependencies = { "nvim-lua/plenary.nvim" },
+
     keys = {
-      { "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find Files" },
-      { "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Live Grep" },
-      { "<leader>fb", function() require("telescope.builtin").buffers() end, desc = "Buffers" },
+      { "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<CR>", desc = "Find Files" },
+      { "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<CR>", desc = "Live Grep" },
+      { "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<CR>",   desc = "Buffers" },
     },
+
     config = function()
       require("telescope").setup({})
     end,

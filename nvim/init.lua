@@ -49,3 +49,14 @@ require("lazy").setup("plugins", {
   },
 })
 
+--------------------------------------------------
+--  目录树
+--------------------------------------------------
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
+vim.keymap.set("n", "<leader>f", ":NvimTreeFindFile<CR>", { silent = true })
+
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--  callback = function()
+--    require("nvim-tree.api").tree.open()
+--  end
+-- })
