@@ -55,6 +55,26 @@ require("lazy").setup("plugins", {
 vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { silent = true })
 vim.keymap.set("n", "<leader>f", ":NvimTreeFindFile<CR>", { silent = true })
 
+--------------------------------------------------
+-- LSP 相关快捷键
+--------------------------------------------------
+-- 这些快捷键在 lsp.lua 中已部分配置，这里添加一些全局快捷键
+
+-- 快速重新加载 Neovim 配置
+vim.keymap.set("n", "<leader><leader>r", function()
+  vim.cmd("source ~/.config/nvim/init.lua")
+  vim.notify("Neovim 配置已重新加载", vim.log.levels.INFO)
+end, { desc = "重新加载配置" })
+
+-- 打开 Mason 管理界面
+vim.keymap.set("n", "<leader>lm", ":Mason<CR>", { desc = "打开 Mason (LSP 管理)" })
+
+-- 显示 LSP 信息
+vim.keymap.set("n", "<leader>li", ":LspInfo<CR>", { desc = "显示 LSP 信息" })
+
+-- 重启 LSP 服务器
+vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "重启 LSP 服务器" })
+
 -- vim.api.nvim_create_autocmd("VimEnter", {
 --  callback = function()
 --    require("nvim-tree.api").tree.open()
