@@ -15,16 +15,24 @@ return {
       renderer = {
         icons = {
           show = {
-            file = true,
-            folder = true,
-            folder_arrow = true,
+            file = false,
+            folder = false,
+            folder_arrow = false,
             git = true,
           },
         },
       },
       actions = {
         open_file = {
-          quit_on_open = true,
+          quit_on_open = false,
+          window_picker = {
+             enable = false, -- 启用窗口选择器
+          -- 关键：排除所有非nvim-tree窗口，强制创建新窗口
+            exclude = {
+              filetype = { "not_a_real_filetype" }, -- 清空排除列表
+              buftype = {},
+            },
+          },
         },
       },
     })
