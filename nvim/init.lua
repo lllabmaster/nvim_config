@@ -80,3 +80,8 @@ vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "重启 LSP 服务
 --    require("nvim-tree.api").tree.open()
 --  end
 -- })
+
+
+-- 我的快捷键
+vim.keymap.set("n", "<leader>b", "<cmd>Telescope buffers<CR>", { noremap = true, silent = true })
+
