@@ -13,6 +13,20 @@ vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
 
 --------------------------------------------------
+-- 基础快捷键
+--------------------------------------------------
+-- 窗口切换
+-- 窗口切换：Ctrl + hjkl
+vim.keymap.set("n", "<C-h>", "<C-w>h", { silent = true })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { silent = true })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { silent = true })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { silent = true })
+vim.keymap.set("i", "<C-h>", "<Esc><C-w>h", { silent = true })
+vim.keymap.set("i", "<C-j>", "<Esc><C-w>j", { silent = true })
+vim.keymap.set("i", "<C-k>", "<Esc><C-w>k", { silent = true })
+vim.keymap.set("i", "<C-l>", "<Esc><C-w>l", { silent = true })
+
+--------------------------------------------------
 -- 安装并加载 lazy.nvim
 --------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
