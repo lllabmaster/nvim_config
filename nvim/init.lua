@@ -12,6 +12,8 @@ vim.opt.expandtab = true
 vim.opt.termguicolors = true
 vim.opt.clipboard = "unnamedplus"
 
+vim.g.lazy_show_ui = false
+
 --------------------------------------------------
 -- 基础快捷键
 --------------------------------------------------
