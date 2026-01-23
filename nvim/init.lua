@@ -1,3 +1,12 @@
+-- 临时屏蔽特定的弃用警告通知
+local original_notify = vim.notify
+vim.notify = function(msg, level, opts)
+  if msg:find("deprecated") or msg:find("lspconfig") then
+    return
+  end
+  original_notify(msg, level, opts)
+end
+
 --------------------------------------------------
 -- 基础设置
 --------------------------------------------------
@@ -52,7 +61,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", {
   defaults = { lazy = true },
   install = { colorscheme = { "habamax" } },
-  checker = { enabled = true },
+  checker = { enabled = false },
   performance = {
     rtp = {
       disabled_plugins = {

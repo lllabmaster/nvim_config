@@ -1,41 +1,43 @@
--- ~/.config/nvim/lua/plugins/lsp-new.lua
 return {
   {
-    "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = { "pyright", "clangd", "bashls", "lua_ls" }
-    }
-  },
-  
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    opts = {
-      automatic_installation = true,
+    "neovim/nvim-lspconfig",
+    -- 1. 解决 nil 错误的核心：对 LSP 核心强制关闭延迟加载
+    lazy = false, 
+    dependencies = {
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+      "hrsh7th/cmp-nvim-lsp",
     },
-    config = function(_, opts)
-      require("mason-lspconfig").setup(opts)
-      
-      -- 获取补全能力
+    config = function()
+      -- 2. 依次初始化插件，确保加载顺序
+      require("mason").setup()
+      require("mason-lspconfig").setup({
+        ensure_installed = { "pyright", "bashls" },
+        automatic_installation = true,
+      })
+
+      local lspconfig = require("lspconfig")
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
-      
-      -- 通用 on_attach 函数
-      local on_attach = function(client, bufnr)
-        local opts = { buffer = bufnr, noremap = true, silent = true }
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', '<leader>fm', function() vim.lsp.buf.format({ async = true }) end, opts)
-      end
-      
-      -- 手动配置每个 LSP 服务器（使用新 API）
+
+      -- 3. 快捷键配置 (使用官方推荐的 LspAttach 方式)
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          local opts = { buffer = ev.buf, noremap = true, silent = true }
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+          vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+          vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+          vim.keymap.set('n', '<leader>fm', function() 
+            vim.lsp.buf.format({ async = true }) 
+          end, opts)
+        end,
+      })
+
+      -- 4. 适配 0.11 的服务器配置逻辑
+      -- 为了避免警告，我们不再使用 setup_handlers，而是手动枚举
       local servers = {
-        {
-          name = "pyright",
-          cmd = { "pyright-langserver", "--stdio" },
-          filetypes = { "python" },
+        pyright = {
           settings = {
             python = {
               analysis = {
@@ -46,49 +48,15 @@ return {
             }
           }
         },
-        {
-          name = "clangd",
-          cmd = {
-            "clangd",
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu"
-          },
-          filetypes = { "c", "cpp", "objc", "objcpp" },
-          root_dir = function(fname)
-            return require('lspconfig.util').root_pattern(
-              'compile_commands.json',
-              'compile_flags.txt',
-              '.git'
-            )(fname) or vim.fn.getcwd()
-          end
-        },
-        {
-          name = "lua_ls",
-          cmd = { "lua-language-server" },
-          filetypes = { "lua" },
-          settings = {
-            Lua = {
-              runtime = { version = 'LuaJIT' },
-              diagnostics = { globals = { 'vim' } },
-              workspace = { checkThirdParty = false },
-              telemetry = { enable = false }
-            }
-          }
-        },
-        {
-          name = "bashls",
-          cmd = { "bash-language-server", "start" },
-          filetypes = { "sh", "bash" }
-        }
+        bashls = {},
       }
-      
-      -- 启动所有配置的服务器
-      for _, config in ipairs(servers) do
-        config.on_attach = on_attach
-        config.capabilities = capabilities
-        vim.lsp.start(config)
+
+      -- 5. 统一启动服务器
+      for server_name, server_opts in pairs(servers) do
+        server_opts.capabilities = capabilities
+        -- 注意：在 0.11 完全移除旧框架前，这样写是目前最稳妥的
+        lspconfig[server_name].setup(server_opts)
       end
-    end
-  }
+    end,
+  },
 }
