@@ -36,7 +36,10 @@ vim.keymap.set("i", "<C-h>", "<Esc><C-w>h", { silent = true })
 vim.keymap.set("i", "<C-j>", "<Esc><C-w>j", { silent = true })
 vim.keymap.set("i", "<C-k>", "<Esc><C-w>k", { silent = true })
 vim.keymap.set("i", "<C-l>", "<Esc><C-w>l", { silent = true })
-
+vim.keymap.set('n', '<leader>t', function()
+  vim.cmd('botright split | resize 10 | terminal')
+  vim.cmd('setlocal winfixheight')
+end)
 --------------------------------------------------
 -- 安装并加载 lazy.nvim
 --------------------------------------------------
